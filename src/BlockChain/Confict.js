@@ -1,4 +1,4 @@
-
+var { countSame } = require("../util");
 
 module.exports = {
   findBestChain(chain, newExtensions){
@@ -15,17 +15,9 @@ module.exports = {
     });
 
     // count each of the comparisons to found out the most common
-    var counts = comparisons.reduce(function(curCounts, comparison, i){
-      if(!Object.keys(curCounts).some(function(curCountIndex){
-        if(compareLists(comparison, comparisons[curCountIndex])){
-          curCounts[curCountIndex]++;
-          return true;
-        }
-      })){
-        comparisons[i] = 1;
-      }
-      return comparisons;
-    }, {});
+    var counts = countSame(comparisons, function(a, b){
+      return compareLists(a, b);
+    });
 
     // sort the unique comparisonIndexes by count descending
     var countIndexes = Object.keys(counts).sort(function(a, b){
@@ -36,9 +28,17 @@ module.exports = {
     return comparisons[countIndexes[0]];
   },
   ensureSameBlock(blocks){
+    var uniqueBlockCount = countSame(blocks, function(a, b){
+      if(a.signature !== b.signature) return false;
+      if(a.publicKey !== b.publicKey) return false;
+      if(a.prev !== b.prev) return false;
+      if(a.index !== b.index) return false;
+      if(!deepCompare(a.tree, b.tree)) return false;
+      return true;
+    });
 
   }
-}
+};
 
 /*
 
@@ -54,10 +54,34 @@ Compare each of the lists
 
 */
 
+function countSame(list, comparator){
+
+}
+
 function compareLists(a, b){
   if(a.length !== b.length) return false;
   return !a.some(function(aS, i){
     return aS !== b[i];
+  });
+}
+
+function deepCompare(a, b){
+  if(typeof a !== typeof b){
+    return false;
+  }
+  if(typeof a !== "object"){
+    return a === b;
+  }
+  var keysA = Object.keys(a);
+  var keysB = Object.keys(a);
+  if(keysA.length !== keysB.length){
+    return false;
+  }
+  return !keysA.some(function(keyA){
+    if(keysB.indexOf(keyA) === -1){
+      return true;
+    }
+    return !deepCompare(a[keyA], b[keyA]);
   });
 }
 

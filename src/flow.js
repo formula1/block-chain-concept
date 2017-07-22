@@ -6,6 +6,9 @@ var Block = require("./Block");
 var Application = require("./Application");
 var WorkManager = require("./WorkManager");
 
+
+
+
 module.exports = function(application, chain, network){
   application.on("entry", makeEntry);
   chain.on("verified", finishedVerification);
@@ -77,4 +80,8 @@ function handleNewVerifiedBlock(application, workManager, network, chain, data){
     event: "block",
     data: data,
   });
+}
+
+function requestProofOfLongerChain(network, block){
+
 }

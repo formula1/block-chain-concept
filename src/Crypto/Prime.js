@@ -58,16 +58,17 @@ module.exports = class PrimeHandler{
     var _this = this;
     return new Promise(function(res){
       _this.lock("create", function(release){
-        _this.getLastPrime(list).then(function(last){
-          return createPrimesUntil(last, sqRoot, list).then(function(){
-            release(function(){
+        return _this.cloneCurrent().then(function(list){
+          _this.getLastPrime(list).then(function(){
+            return createPrimesUntil(last, sqRoot, list).then(function(){
+              release(function(){
 
-            })
+              })
+            });
           });
         });
       });
-    })
-    this.list = newList;
+    });
   }
 
   getLastPrime(list){

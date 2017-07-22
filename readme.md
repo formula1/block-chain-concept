@@ -19,12 +19,29 @@
   - These relationships may be one way
   - These relationships may be circular
 
+## Overall Flow
+- App Does a function
+- Create Entry to mutate state
+- Broadcast to network
+- Network shares it with each Person
+- A block is eventually created with the Entry
+- The block is shared with everyone
+- Creator receives the new block
+- Entries are retrieved from the block
+- Entries update the Application State
+
+## Handeling
+- Bad Entries
+- Bad Blocks
+- Bad Signing
+- Bad Announcement
+
 ## Network
 
-### Input
+### User Input
 - Initial IP Address
 
-### Data
+### Further Data
 - Tracker - List
 - DHT - Web
 
@@ -32,18 +49,27 @@
 - Request full chain tree
 - Request latest chain tree
 - Request Blocks in the chain
+- Announce yourself as a participant
 - Announce an Entry
 - Announce a block
 
 
-## Retaining Order
-- Each individual can create blocks that point to the previous
-- If multiple Blocks point to the same block, that is ok
+## Block Control Barrier to Entry
+### Proof of Work
+- The creator of the last block is considered the delegator
+- Request group of hashes
 
-- Blocks are sorted by
-  - Point - Blocks come after the block they are pointing to
-  - Date - Ascending
-  - PublicKey - Ascending
+### Proof of stake
+- Based off one of the Decentralized Application Economies
+
+
+## Decentralized Application
+- Actions
+  - Mutates the state
+- State compilation
+  -
+- Client
+  -
 
 ## Verifying new Blocks
 - Public Key works as expected
@@ -51,6 +77,5 @@
   - Person A encrypts Person B's public key along with the contents and date
   - Person B encrypts Person A's public key along with the contents and date
   - They give it to one another
-    - THey decrypt the other parties and
+    - They decrypt the other parties and
     - They then encrypt both again
--

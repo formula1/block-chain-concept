@@ -7,26 +7,26 @@ var Block = require("../Block");
 var User = require("./User");
 var Persistance = require("../System/Persistance");
 
-
 module.exports = {
   create: function(user){
     var workManager = WorkManager.create();
     var chainPersistance = Persistance.create("/chain");
-    var chain = chainPersistance.get();
-    if(!chain){
-      chain = Chain.create();
-      chainPersistance.set(chain);
-    }
-    var network = Network.create(user, chain);
-    return {
-      user,
-      workManager,
-      network,
-      chain,
-    };
-  },
-  synchronizeWithNetwork: function(system){
-
+    return chainPersistance.get().then(function(chain){
+      if(!chain){
+        chain = Chain.create();
+        chainPersistance.set(chain);
+      }
+      var network = Network.create(user, chain);
+      var ret = {
+        user,
+        workManager,
+        network,
+        chain,
+      };
+      return synchronizeChainWithNetwork(ret).then(function(){
+        return ret;
+      });
+    });
   },
   makeApplicationEntry: function(system, applicationName, methodName, values){
     var { user, network, chain } = system;
@@ -102,6 +102,27 @@ function handleNewVerifiedBlock(system, data){
     data: data,
   });
 }
+
+function synchronizeChainWithNetwork(system){
+  var { network, chain } = system;
+  var lastHash = chain.list[chain.list.length - 1];
+  return Network.request(
+    "/chain-after-hash", { hash: lastHash }
+  ).then(function(results){
+  }).then(function(hashs){
+    return hashs.reduce(function(p, hash){
+      return p.then(function(){
+        return Network.request(
+          "/block", { hash: hash }
+        );
+      }).then(function(results){
+        Block
+      });
+      return .then(function(results){
+    });
+  });
+}
+
 
 function requestProofOfLongerChain(network, block){
 

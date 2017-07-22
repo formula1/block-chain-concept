@@ -9,7 +9,6 @@ module.exports.entry = function(){
     userPersistance.set(user);
   }
 
-
 }
 
 if(!module.parent){
